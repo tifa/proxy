@@ -5,7 +5,7 @@ networks:
 
 services:
   proxy:
-    image: traefik:latest
+    image: proxy
     container_name: ${COMPOSE_PROJECT_NAME:-}
     hostname: ${HOSTNAME:-}
     command:

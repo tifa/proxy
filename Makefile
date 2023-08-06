@@ -1,19 +1,25 @@
 .DEFAULT_GOAL := start
 
 ACTIVATE = . venv/bin/activate;
+ASSETS = $(shell find assets -type f -name '*')
 PROJECT_NAME = proxy
 
 .git/hooks/pre-commit: venv
 	$(ACTIVATE) pre-commit install
-	touch $@
+	@touch $@
 
 venv: venv/.touchfile
 venv/.touchfile: requirements.txt
 	test -d venv || virtualenv venv
 	$(ACTIVATE) pip install -Ur requirements.txt
-	touch $@
+	@touch $@
 
-setup: venv .git/hooks/pre-commit
+setup: venv .git/hooks/pre-commit build
+
+build: venv/.build_touchfile
+venv/.build_touchfile: Dockerfile $(ASSETS)
+	docker build -t $(PROJECT_NAME) .
+	@touch $@
 
 .PHONY: start
 start: setup network
