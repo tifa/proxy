@@ -1,4 +1,4 @@
-# proxy
+# proxy 🚦
 
 A reverse proxy on Docker to handle connection requests for various apps, that use the same port numbers, hosted on my local machine.
 
