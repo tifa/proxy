@@ -18,10 +18,16 @@ In this proxy's `compose.yaml` file, make the following updates if necessary:
 
 Add the hostname (e.g. `my-app.local`) to `/etc/hosts`.
 
-Start up or recreate the proxy.
+Start up.
 
 ```sh
 make
+```
+
+Or recreate.
+
+```sh
+make restart
 ```
 
 
@@ -37,9 +43,9 @@ make dashboard
 
 ## Current Usage
 
-- [tifa/art](/tifa/art) - scribbles
-- [tifa/chyouhwu](/tifa/chyouhwu) - family geneaology site
-- [tifa/color-chart](/tifa/color-chart) - digital color mixing chart
-- [tifa/meijung](/tifa/meijung) - travel log
-- [tifa/post](/tifa/post) - posts
-- [tifa/virtualmail](/tifa/virtualmail) - virtual mail forwarder
+- [tifa/art](http://github.com/tifa/art) - scribbles
+- [tifa/color-chart](http://github.com/tifa/color-chart) - digital color mixing chart
+- [tifa/meijung](http://github.com/tifa/meijung) - travel log
+- [tifa/post](http://github.com/tifa/post) - posts
+- [tifa/tree](http://github.com/tifa/tree) - family geneaology site
+- [tifa/virtualmail](http://github.com/tifa/virtualmail) - virtual mail forwarder
