@@ -10,6 +10,15 @@ For the application's service in its `compose.yaml` file:
 1. "Unexpose" port(s) from the service.
 1. Set `networks` to `proxy`.
 1. Set `hostname` to the desired hostname (e.g. `my-app.local`).
+1. Add the following labels:
+
+    ```sh
+    - "traefik.enable=true"
+    - "traefik.http.routers.<UNIQUE_KEY>.entrypoints=<ENTRYPOINT>"
+    - "traefik.http.routers.<UNIQUE_KEY>.rule=Host(`<HOSTNAME>`)"
+    - "traefik.http.routers.<UNIQUE_KEY>.service=<UNQIUE_KEY>"
+    - "traefik.http.services.<UNIQUE_KEY>.loadbalancer.server.port=<PORT>"
+    ```
 
 In this proxy's `compose.yaml` file, make the following updates if necessary:
 
@@ -48,4 +57,3 @@ make dashboard
 - [tifa/meijung](http://github.com/tifa/meijung) - travel log
 - [tifa/post](http://github.com/tifa/post) - posts
 - [tifa/tree](http://github.com/tifa/tree) - family geneaology site
-- [tifa/virtualmail](http://github.com/tifa/virtualmail) - virtual mail forwarder
