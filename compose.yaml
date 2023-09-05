@@ -17,11 +17,13 @@ services:
       - "--api.insecure=true"
       - "--api.debug=true"
       - "--entrypoints.web.address=:80"
+      - "--entrypoints.mysql.address=:3306"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.dashboard.rule=Host(`${HOSTNAME:-}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
       - "traefik.http.routers.dashboard.service=api@internal"
     ports:
+      - 3306:3306
       - 80:80
       - 8080:8080
     volumes:
