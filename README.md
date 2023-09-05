@@ -2,7 +2,6 @@
 
 A reverse proxy on Docker to handle connection requests for various apps, that use the same port numbers, hosted on my local machine.
 
-
 ## Instructions
 
 For the application's service in its `compose.yaml` file:
@@ -18,6 +17,14 @@ For the application's service in its `compose.yaml` file:
     - "traefik.http.routers.<UNIQUE_KEY>.rule=Host(`<HOSTNAME>`)"
     - "traefik.http.routers.<UNIQUE_KEY>.service=<UNQIUE_KEY>"
     - "traefik.http.services.<UNIQUE_KEY>.loadbalancer.server.port=<PORT>"
+    ```
+
+1. Add this to `networks`:
+
+    ```sh
+    networks:
+        proxy:
+            external: true
     ```
 
 In this proxy's `compose.yaml` file, make the following updates if necessary:
@@ -38,7 +45,6 @@ Or recreate.
 ```sh
 make restart
 ```
-
 
 ## Dashboard
 
