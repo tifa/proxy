@@ -8,26 +8,18 @@ services:
     image: proxy
     container_name: ${COMPOSE_PROJECT_NAME:-}
     hostname: ${HOSTNAME:-}
-    command:
-      - "--log.level=DEBUG"
-      - "--accessLog.filePath=/logs/access.log"
-      - "--log.filePath=/logs/stdout.log"
-      - "--providers.docker=true"
-      - "--api.dashboard=true"
-      - "--api.insecure=true"
-      - "--api.debug=true"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.mysql.address=:3306"
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.dashboard.rule=Host(`${HOSTNAME:-}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
-      - "traefik.http.routers.dashboard.service=api@internal"
+      traefik.enable: true
+      traefik.http.routers.dashboard.rule: Host(`${HOSTNAME:-}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+      traefik.http.routers.dashboard.service: api@internal
     ports:
       - 3306:3306
+      - 443:443
       - 80:80
       - 8080:8080
     volumes:
-      - ./logs/:/logs/
+      - ./assets/traefik/${ENVIRONMENT}:/etc/traefik/
+      - ./logs/:/var/log/traefik/
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - proxy

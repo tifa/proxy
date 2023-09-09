@@ -1,65 +1,87 @@
 # proxy 🚦
 
-A reverse proxy on Docker to handle connection requests for various apps, that use the same port numbers, hosted on my local machine.
+A Traefik reverse proxy on Docker to handle connection requests for various apps.
 
-## Instructions
+## Setup
 
-For the application's service in its `compose.yaml` file:
+Copy the sample environment file.
 
-1. "Unexpose" port(s) from the service.
-1. Set `networks` to `proxy`.
-1. Set `hostname` to the desired hostname (e.g. `my-app.local`).
-1. Add the following labels:
+```sh
+cp .env.example .env
+```
 
-    ```sh
-    - "traefik.enable=true"
-    - "traefik.http.routers.<UNIQUE_KEY>.entrypoints=<ENTRYPOINT>"
-    - "traefik.http.routers.<UNIQUE_KEY>.rule=Host(`<HOSTNAME>`)"
-    - "traefik.http.routers.<UNIQUE_KEY>.service=<UNQIUE_KEY>"
-    - "traefik.http.services.<UNIQUE_KEY>.loadbalancer.server.port=<PORT>"
-    ```
+Valid values for the `ENVIRONMENT` variable are `local` and `prod`. The local environment uses self-signed SSL certificates for HTTPS connections whereas in production it uses [Let's Encrypt][lets-encrypt].
 
-1. Add this to `networks`:
+Update `HOSTNAMES` with a comma-separated list of domain names to create certificates for, e.g. `*.tifa.local`, `tifa.io`, `localhost`.
 
-    ```sh
+Start up the Docker network and reverse proxy container.
+
+```sh
+make start
+```
+
+In development environments, a certificate will be created at `./assets/traefik/certs/local.crt`. Make sure you add this to the list of trusted SSL certificates ([macOS steps][trust-certificate-macos]).
+
+To view the Traefik dashboard:
+
+```sh
+make open
+```
+
+## Add a New Service
+
+Add the following labels and `proxy` network to service:
+
+```yaml
+  myservice:
+    image: myimage
+    labels:
+      traefik.enable: true
+      traefik.http.routers.<ROUTER_KEY>.rule: Host(`${HOSTNAME:-}`)
+      traefik.http.routers.<ROUTER_KEY>.entrypoints: <ENTRYPOINT>
+      traefik.http.routers.<ROUTER_KEY>.service: <SERVICE_KEY>
+      traefik.http.services.<SERVICE_KEY>.loadbalancer.server.port: 443
     networks:
-        proxy:
-            external: true
-    ```
-
-In this proxy's `compose.yaml` file, make the following updates if necessary:
-
-1. Add an entrypoint and labels for the port number(s) if they do not already exist.
-1. Expose the port(s) if not already done.
-
-Add the hostname (e.g. `my-app.local`) to `/etc/hosts`.
-
-Start up.
-
-```sh
-make
+      - proxy
 ```
 
-Or recreate.
+Each service needs to have a unique `ROUTER_KEY`/`SERVICE_KEY`.
 
-```sh
-make restart
+Currently supported entrypoints:
+
+Entrypoint | Port
+--- | ---
+web | 80
+websecure | 443
+mysql | 3306
+
+For `websecure` HTTPS connections be sure to enable TLS as well.
+
+```yaml
+    traefik.http.routers.<ROUTER_KEY>.tls: true
 ```
 
-## Dashboard
+Finally, define the external network at the top level.
 
-See: [http://proxy.local:8080/dashboard](http://proxy.local/dashboard).
-
-`proxy.local` should be in `/etc/hosts`.
-
-```sh
-make dashboard
+```yaml
+networks:
+  proxy:
+    external: true
 ```
 
-## Current Usage
+## Add a New Domain
 
-- [tifa/art](http://github.com/tifa/art) - scribbles
-- [tifa/color-chart](http://github.com/tifa/color-chart) - digital color mixing chart
-- [tifa/meijung](http://github.com/tifa/meijung) - travel log
-- [tifa/post](http://github.com/tifa/post) - posts
-- [tifa/tree](http://github.com/tifa/tree) - family geneaology site
+Update the `.env` file with the new domain name.
+
+For local environments,  (and add it to your trusted certificates list):
+
+```sh
+make start
+```
+
+
+<!-- docs -->
+[trust-certificate-macos]: docs/trust-certificate-macos.md
+
+<!-- external -->
+[lets-encrypt]: https://letsencrypt.org

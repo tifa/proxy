@@ -1,2 +1,9 @@
 venv/
 logs/
+
+*.crt
+*.key
+
+
+.env
+*.tmp
