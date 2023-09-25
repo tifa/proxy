@@ -58,7 +58,7 @@ mysql | 3306
 For `websecure` HTTPS connections be sure to enable TLS as well.
 
 ```yaml
-    traefik.http.routers.<ROUTER_KEY>.tls: true
+    traefik.http.routers.<ROUTER_KEY>.tls: letsencrypt
 ```
 
 Finally, define the external network at the top level.
