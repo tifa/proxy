@@ -39,8 +39,6 @@ Add the following labels and `proxy` network to service:
       traefik.enable: true
       traefik.http.routers.<ROUTER_KEY>.rule: Host(`${HOSTNAME:-}`)
       traefik.http.routers.<ROUTER_KEY>.entrypoints: <ENTRYPOINT>
-      traefik.http.routers.<ROUTER_KEY>.service: <SERVICE_KEY>
-      traefik.http.services.<SERVICE_KEY>.loadbalancer.server.port: 443
     networks:
       - proxy
 ```
@@ -58,7 +56,7 @@ mysql | 3306
 For `websecure` HTTPS connections be sure to enable TLS as well.
 
 ```yaml
-    traefik.http.routers.<ROUTER_KEY>.tls: true
+    traefik.http.routers.<ROUTER_KEY>.tls.certresolver: letsencrypt
 ```
 
 Finally, define the external network at the top level.

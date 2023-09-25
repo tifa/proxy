@@ -3,7 +3,7 @@ logs/
 
 *.crt
 *.key
-
+acme.json
 
 .env
 *.tmp
